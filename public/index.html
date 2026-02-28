@@ -1,143 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>BROKEN LORD DR - Pair Code & QR</title>
-  <style>
-    body {
-      background: #050816;
-      color: #f5f5f5;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 10px;
-    }
-    .card {
-      background: #0b1020;
-      border-radius: 12px;
-      padding: 20px;
-      max-width: 420px;
-      width: 100%;
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
-      border: 1px solid rgba(0, 255, 255, 0.25);
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 10px;
-      color: #00e5ff;
-    }
-    p {
-      font-size: 14px;
-      opacity: 0.8;
-      text-align: center;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 15px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: #050816;
-      color: #f5f5f5;
-      outline: none;
-    }
-    button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: linear-gradient(90deg, #00e5ff, #7c4dff);
-      color: #050816;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .result {
-      margin-top: 20px;
-      font-size: 14px;
-      word-break: break-all;
-    }
-    img {
-      margin-top: 10px;
-      border-radius: 8px;
-      background: #fff;
-      padding: 5px;
-    }
-    .note {
-      margin-top: 10px;
-      font-size: 12px;
-      opacity: 0.7;
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>BROKEN LORD DR - Pair Code & QR</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    color: #fff;
+  }
+
+  /* Background video */
+  #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3;
+    filter: brightness(0.35);
+  }
+
+  /* Dark overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 8, 22, 0.6);
+    z-index: -2;
+  }
+
+  /* Floating particles */
+  .particles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #00e5ff;
+    border-radius: 50%;
+    animation: floatUp 8s linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes floatUp {
+    from { transform: translateY(100vh); opacity: 0; }
+    to { transform: translateY(-10vh); opacity: 1; }
+  }
+
+  /* Main card */
+  .card {
+    width: 420px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    border-radius: 15px;
+    padding: 25px;
+    margin: auto;
+    margin-top: 60px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.25);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #00e5ff;
+    text-shadow: 0 0 15px #00e5ff;
+  }
+
+  p {
+    text-align: center;
+    opacity: 0.85;
+    font-size: 14px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 18px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    outline: none;
+    font-size: 15px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(90deg, #00e5ff, #7c4dff);
+    color: #050816;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 0 15px rgba(0,255,255,0.4);
+  }
+
+  .result {
+    margin-top: 20px;
+    font-size: 14px;
+    word-break: break-all;
+  }
+
+  img {
+    margin-top: 10px;
+    border-radius: 10px;
+    background: #fff;
+    padding: 5px;
+    width: 250px;
+  }
+
+  .note {
+    margin-top: 15px;
+    text-align: center;
+    opacity: 0.7;
+    font-size: 12px;
+  }
+</style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>BROKEN LORD DR</h1>
-    <p>Ingiza namba yako ya WhatsApp (mfano: 2557XXXXXXXX), kisha bonyeza Generate kupata <b>PAIR CODE</b> na <b>QR CODE</b>.</p>
 
-    <input id="number" placeholder="2557XXXXXXXX" />
-    <button id="btn" onclick="generate()">Generate</button>
+<!-- Background video -->
+<video autoplay muted loop id="bg-video">
+  <source src="https://cdn.pixabay.com/vimeo/458749676/galaxy-46960.mp4?width=1280" type="video/mp4">
+</video>
 
-    <div class="result">
-      <div><b>PAIR CODE:</b></div>
-      <pre id="pair"></pre>
+<div class="overlay"></div>
 
-      <div><b>QR CODE:</b></div>
-      <img id="qr" alt="QR Code" />
-    </div>
-
-    <div class="note">
-      Chagua kutumia Pair Code au QR kwenye Linked Devices.  
-      Bot: <b>BROKEN LORD DR</b>
-    </div>
-  </div>
-
+<!-- Particles -->
+<div class="particles">
   <script>
-    async function generate() {
-      const btn = document.getElementById("btn");
-      const number = document.getElementById("number").value.trim();
-      const pairEl = document.getElementById("pair");
-      const qrEl = document.getElementById("qr");
-
-      if (!number) {
-        alert("Tafadhali weka namba kwanza.");
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerText = "Generating...";
-
-      pairEl.innerText = "";
-      qrEl.src = "";
-
-      try {
-        const res = await fetch("/generate?number=" + encodeURIComponent(number));
-        const data = await res.json();
-
-        if (!data.success) {
-          alert(data.error || "Imeshindikana kupata pair code.");
-        } else {
-          pairEl.innerText = data.pairCode || "Haikupatikana (jaribu tena)";
-          if (data.qrImage) {
-            qrEl.src = data.qrImage;
-          } else {
-            qrEl.alt = "QR haikupatikana";
-          }
-        }
-      } catch (e) {
-        console.error(e);
-        alert("Kuna hitilafu, jaribu tena.");
-      }
-
-      btn.disabled = false;
-      btn.innerText = "Generate";
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement("div");
+      p.className = "particle";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.animationDelay = Math.random() * 8 + "s";
+      p.style.animationDuration = 6 + Math.random() * 6 + "s";
+      document.body.appendChild(p);
     }
   </script>
+</div>
+
+<!-- Main UI -->
+<div class="card">
+  <h1>BROKEN LORD DR</h1>
+  <p>Ingiza namba yako ya WhatsApp (mfano: 2557XXXXXXXX), kisha bonyeza Generate kupata <b>PAIR CODE</b> na <b>QR CODE</b>.</p>
+
+  <input id="number" placeholder="2557XXXXXXXX" />
+  <button id="btn" onclick="generate()">Generate</button>
+
+  <div class="result">
+    <div><b>PAIR CODE:</b></div>
+    <pre id="pair"></pre>
+
+    <div><b>QR CODE:</b></div>
+    <img id="qr" alt="QR Code" />
+  </div>
+
+  <div class="note">
+    Chagua kutumia Pair Code au QR kwenye Linked Devices.<br>
+    Bot: <b>BROKEN LORD DR</b>
+  </div>
+</div>
+
+<script>
+async function generate() {
+  const btn = document.getElementById("btn");
+  const number = document.getElementById("number").value.trim();
+  const pairEl = document.getElementById("pair");
+  const qrEl = document.getElementById("qr");
+
+  if (!number) {
+    alert("Tafadhali weka namba kwanza.");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "Generating...";
+
+  pairEl.innerText = "";
+  qrEl.src = "";
+
+  try {
+    const res = await fetch("/generate?number=" + encodeURIComponent(number));
+    const data = await res.json();
+
+    pairEl.innerText = data.pairCode || "Haikupatikana (jaribu tena)";
+    qrEl.src = data.qrImage || "";
+  } catch (e) {
+    alert("Hitilafu imetokea.");
+  }
+
+  btn.disabled = false;
+  btn.innerText = "Generate";
+}
+</script>
+
 </body>
 </html>
