@@ -1,78 +1,47 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import qrcode from "qrcode";
-import makeWASocket, { useMultiFileAuthState } from "@whiskeysockets/baileys";
+import makeWASocket, { useMultiFileAuthState, DisconnectReason } from "@whiskeysockets/baileys";
 import pino from "pino";
-import fs from "fs-extra";
+import fs from "fs";
+import path from "path";
+import config from "./config.js";
+import handler from "./lib/handler.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+async function startBot() {
+    const sessionPath = "./sessions";
+    if (!fs.existsSync(sessionPath)) fs.mkdirSync(sessionPath);
 
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-// hakikisha sessions folder ipo
-const sessionsDir = path.join(__dirname, "sessions");
-if (!fs.existsSync(sessionsDir)) fs.mkdirSync(sessionsDir);
-
-// serve frontend
-app.use(express.static(path.join(__dirname, "public")));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-// API ya kutengeneza pair code + QR
-app.get("/generate", async (req, res) => {
-  try {
-    const number = (req.query.number || "").trim();
-
-    if (!number) {
-      return res.status(400).json({ error: "Number is required" });
-    }
-
-    const sessionPath = path.join(sessionsDir, number);
     const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
 
     const sock = makeWASocket({
-      logger: pino({ level: "silent" }),
-      printQRInTerminal: false,
-      auth: state,
-      browser: ["BROKEN LORD MD", "Chrome", "1.0.0"]
+        logger: pino({ level: "silent" }),
+        printQRInTerminal: true,
+        auth: state,
+        browser: ["BROKEN LORD MD", "Chrome", "1.0.0"]
     });
 
     sock.ev.on("creds.update", saveCreds);
 
-    let pairCode = null;
-    let qrImage = null;
+    sock.ev.on("connection.update", async (update) => {
+        const { connection, lastDisconnect } = update;
 
-    try {
-      pairCode = await sock.requestPairingCode(number);
-      if (pairCode) {
-        qrImage = await qrcode.toDataURL(pairCode);
-      }
-    } catch (e) {
-      console.log("Pairing error:", e.message);
-    }
+        if (connection === "close") {
+            const reason = lastDisconnect?.error?.output?.statusCode;
 
-    setTimeout(() => {
-      try { sock.end(); } catch {}
-    }, 3000);
+            if (reason !== DisconnectReason.loggedOut) {
+                console.log("Reconnecting...");
+                startBot();
+            } else {
+                console.log("Logged out. Delete sessions and scan again.");
+            }
+        }
 
-    return res.json({
-      success: true,
-      number,
-      pairCode: pairCode || null,
-      qrImage: qrImage || null
+        if (connection === "open") {
+            console.log("BROKEN LORD MD Connected Successfully!");
+        }
     });
 
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
+    sock.ev.on("messages.upsert", async (msg) => {
+        await handler(sock, msg);
+    });
+}
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`BROKEN LORD MD Pair Session Server running on port ${PORT}`);
-});
+startBot();
