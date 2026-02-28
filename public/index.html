@@ -1,80 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>BROKEN LORD MD — Pair Session</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BROKEN LORD MD - Pair Code</title>
+    <style>
+        body { font-family: Arial; background: #111; color: #fff; text-align: center; padding-top: 80px; }
+        input { padding: 12px; width: 260px; border-radius: 6px; border: none; }
+        button { padding: 12px 20px; background: #ff0066; border: none; color: #fff; border-radius: 6px; cursor: pointer; }
+        .box { margin-top: 30px; padding: 20px; background: #222; width: 350px; margin-left: auto; margin-right: auto; border-radius: 10px; }
+    </style>
+</head>
+<body>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
-body{background:#050816;color:#fff;overflow-x:hidden;}
+<h1>BROKEN LORD MD</h1>
+<p>Enter your WhatsApp number to generate Pair Code</p>
 
-/* HERO SECTION */
-.hero{
-    width:100%;
-    height:65vh;
-    background-image:url('https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=1600');
-    background-size:cover;
-    background-position:center;
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-}
-.hero-overlay{
-    position:absolute;top:0;left:0;width:100%;height:100%;
-    background:linear-gradient(to bottom,rgba(0,0,0,0.7),rgba(5,8,22,0.9));
-}
-.hero-content{
-    position:relative;z-index:2;max-width:750px;padding:20px;
-}
-.hero h1{
-    font-size:2.8rem;font-weight:bold;margin-bottom:10px;
-    color:#00e5ff;text-shadow:0 0 18px #00e5ff;
-}
-.hero p{
-    font-size:1rem;opacity:0.9;margin-bottom:20px;
-}
-.hero-inputs{
-    display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px;
-}
-.hero-inputs input{
-    padding:12px 14px;border-radius:6px;border:none;min-width:230px;
-    background:rgba(0,0,0,0.6);color:#fff;outline:none;
-}
-.hero-inputs button{
-    padding:12px 22px;background:#00e5ff;border-radius:6px;
-    border:none;color:#050816;font-weight:bold;cursor:pointer;
-    transition:0.2s;box-shadow:0 0 15px rgba(0,229,255,0.6);
-}
-.hero-inputs button:hover{background:#7c4dff;box-shadow:0 0 20px rgba(124,77,255,0.8);}
+<input id="num" placeholder="2557XXXXXXXX">
+<button onclick="generate()">Generate</button>
 
-/* RESULT BOX */
-.result-box{
-    margin-top:18px;
-    background:rgba(0,0,0,0.65);
-    border-radius:10px;
-    padding:15px;
-    border:1px solid rgba(0,229,255,0.4);
-}
-.result-box h3{
-    font-size:1rem;margin-bottom:8px;color:#00e5ff;
-}
-.result-box pre{
-    background:#000;padding:10px;border-radius:6px;
-    font-size:0.9rem;max-height:120px;overflow:auto;
-}
-.result-box img{
-    margin-top:10px;border-radius:10px;background:#fff;padding:5px;
-    width:220px;
-}
+<div class="box" id="result"></div>
 
-/* SECTION TITLE */
-.section-title{
-    font-size:1.4rem;font-weight:bold;margin:20px 0 10px 15px;
-}
+<script>
+async function generate() {
+    const number = document.getElementById("num").value;
+    if (!number) return alert("Enter number");
 
+    document.getElementById("result").innerHTML = "Generating...";
+
+    const res = await fetch(`/pair?number=${number}`);
+    const data = await res.json();
+
+    if (data.error) {
+        document.getElementById("result").innerHTML = "Error generating pair code";
+        return;
+    }
+
+    document.getElementById("result").innerHTML = `
+        <h3>PAIR CODE</h3>
+        <p>${data.pairingCode}</p>
+        <h3>QR CODE</h3>
+        <img src="${data.qr}" width="250">
+    `;
+}
+</script>
+
+</body>
+</html>
 /* SLIDER */
 .slider{width:100%;overflow:hidden;margin-top:10px;}
 .slide-track{
