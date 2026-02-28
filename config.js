@@ -1,15 +1,26 @@
-export default {
-    prefix: ['.', '!', '/'], 
-    defaultPrefix: '.', 
+// config.js
+const config = {
+  bot: {
+    name: "BROKEN LORD MD",
+    version: "1.0.0",
+    mode: "private" // "private" | "public"
+  },
 
-    projectOwner: {
-        number: "255773001107",
-        name: "BROKENLORD"
-    },
+  projectOwner: {
+    name: "BROKENLORD",
+    number: "255773001107" // bila +
+  },
 
-    bot: {
-        name: "BROKEN LORD MD",
-        mode: "private", 
-        version: "1.0.0"
-    }
+  // Prefix zinazokubalika
+  prefix: [".", "!", "/"],
+  defaultPrefix: ".",
+
+  // Default group settings
+  defaults: {
+    antilink: false,
+    antibadword: false,
+    antidelete: false
+  }
 };
+
+export default config;
