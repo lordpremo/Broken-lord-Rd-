@@ -4,19 +4,23 @@ import { fileURLToPath } from "url";
 import qrcode from "qrcode";
 import makeWASocket, { useMultiFileAuthState } from "@whiskeysockets/baileys";
 import pino from "pino";
-import fs from "fs";
+import fs from "fs-extra";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // hakikisha sessions folder ipo
 if (!fs.existsSync("./sessions")) fs.mkdirSync("./sessions");
 
 // serve frontend
 app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 app.get("/generate", async (req, res) => {
   try {
@@ -67,6 +71,6 @@ app.get("/generate", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`BROKEN LORD DR Pair Server running on port ${PORT}`);
 });
