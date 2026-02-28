@@ -13,7 +13,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // hakikisha sessions folder ipo
-if (!fs.existsSync("./sessions")) fs.mkdirSync("./sessions");
+const sessionsDir = path.join(__dirname, "sessions");
+if (!fs.existsSync(sessionsDir)) fs.mkdirSync(sessionsDir);
 
 // serve frontend
 app.use(express.static(path.join(__dirname, "public")));
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// API ya kutengeneza pair code + QR
 app.get("/generate", async (req, res) => {
   try {
     const number = (req.query.number || "").trim();
@@ -30,14 +32,14 @@ app.get("/generate", async (req, res) => {
       return res.status(400).json({ error: "Number is required" });
     }
 
-    const sessionPath = path.join(__dirname, "sessions", number);
+    const sessionPath = path.join(sessionsDir, number);
     const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
 
     const sock = makeWASocket({
       logger: pino({ level: "silent" }),
       printQRInTerminal: false,
       auth: state,
-      browser: ["BROKEN LORD DR", "Chrome", "1.0.0"]
+      browser: ["BROKEN LORD MD", "Chrome", "1.0.0"]
     });
 
     sock.ev.on("creds.update", saveCreds);
@@ -72,5 +74,5 @@ app.get("/generate", async (req, res) => {
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`BROKEN LORD DR Pair Server running on port ${PORT}`);
+  console.log(`BROKEN LORD MD Pair Session Server running on port ${PORT}`);
 });
