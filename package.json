@@ -1,7 +1,7 @@
 {
-  "name": "broken-lord-dr-pair",
+  "name": "broken-lord-md-pair-session",
   "version": "1.0.0",
-  "description": "BROKEN LORD DR - Pair Code & QR Generator",
+  "description": "BROKEN LORD MD - WhatsApp Pair Session Generator",
   "main": "index.js",
   "type": "module",
   "scripts": {
