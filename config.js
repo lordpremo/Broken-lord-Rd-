@@ -1,26 +1,46 @@
-// config.js
+// config.js — BROKEN LORD MD
+
 const config = {
-  bot: {
-    name: "BROKEN LORD MD",
-    version: "1.0.0",
-    mode: "private" // "private" | "public"
-  },
 
-  projectOwner: {
-    name: "BROKENLORD",
-    number: "255773001107" // bila +
-  },
+    // =============================
+    // BOT INFORMATION
+    // =============================
+    bot: {
+        name: "BROKEN LORD MD",
+        version: "1.0.0",
+    },
 
-  // Prefix zinazokubalika
-  prefix: [".", "!", "/"],
-  defaultPrefix: ".",
+    // =============================
+    // MODE SYSTEM
+    // private = owner tu
+    // public = kila mtu
+    // =============================
+    mode: "private",
 
-  // Default group settings
-  defaults: {
-    antilink: false,
-    antibadword: false,
-    antidelete: false
-  }
+    // =============================
+    // OWNER INFORMATION
+    // Huyu ndiye anayeonekana kwa .owner
+    // =============================
+    projectOwner: {
+        name: "BROKENLORD",
+        number: "255773001107" // bila +
+    },
+
+    // =============================
+    // PREFIX SYSTEM
+    // =============================
+    prefix: [".", "!", "/"],
+    defaultPrefix: ".",
+
+    // =============================
+    // DEFAULT GROUP SETTINGS
+    // =============================
+    defaults: {
+        antilink: false,
+        antibadword: false,
+        antidelete: false,
+        welcome: false
+    }
 };
 
 export default config;
